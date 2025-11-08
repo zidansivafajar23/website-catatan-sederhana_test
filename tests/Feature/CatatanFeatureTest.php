@@ -38,4 +38,24 @@ class CatatanFeatureTest extends TestCase
             'deskripsi' => 'Ini adalah deskripsi test'
         ]);
     }
+
+     /**
+     * Test: READ - Dapat membaca semua catatan
+     * Tested by: Dhana
+     */
+    public function test_can_read_all_catatan(): void
+    {
+        Catatan::create([
+            'judul' => 'Catatan 1',
+            'deskripsi' => 'Deskripsi 1'
+        ]);
+
+        Catatan::create([
+            'judul' => 'Catatan 2',
+            'deskripsi' => 'Deskripsi 2'
+        ]);
+
+        $catatan = Catatan::all();
+        $this->assertCount(2, $catatan);
+    }
 }

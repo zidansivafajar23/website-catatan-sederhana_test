@@ -35,4 +35,22 @@ class CatatanModelTest extends TestCase
         $this->assertEquals('Test Judul', $catatan->judul);
         $this->assertEquals('Test Deskripsi', $catatan->deskripsi);
     }
+
+     /**
+     * Test: Model Catatan dapat dibaca (READ)
+     * Tested by: Dhana
+     */
+    public function test_can_read_catatan_model(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Judul Test',
+            'deskripsi' => 'Deskripsi Test'
+        ]);
+
+        $found = Catatan::find($catatan->id);
+
+        $this->assertNotNull($found);
+        $this->assertEquals($catatan->id, $found->id);
+        $this->assertEquals('Judul Test', $found->judul);
+    }
 }
