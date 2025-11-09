@@ -69,4 +69,24 @@ class CatatanModelTest extends TestCase
 
         $this->assertDatabaseMissing('catatan', ['id' => $id]);
     }
+
+    /**
+     * Test: Model Catatan dapat diupdate (UPDATE)
+     * Tested by: Zidan
+     */
+    public function test_can_update_catatan_model(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Judul Awal',
+            'deskripsi' => 'Deskripsi Awal'
+        ]);
+
+        $catatan->update([
+            'judul' => 'Judul Updated',
+            'deskripsi' => 'Deskripsi Updated'
+        ]);
+
+        $this->assertEquals('Judul Updated', $catatan->fresh()->judul);
+        $this->assertEquals('Deskripsi Updated', $catatan->fresh()->deskripsi);
+    }
 }

@@ -97,4 +97,21 @@ class CatatanFeatureTest extends TestCase
             'deskripsi' => 'Deskripsi Baru'
         ]);
     }
+
+    /**
+     * Test: READ - Dapat membaca satu catatan
+     * Tested by: Zidan
+     */
+    public function test_can_read_single_catatan(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Catatan Single',
+            'deskripsi' => 'Deskripsi Single'
+        ]);
+
+        $found = Catatan::find($catatan->id);
+
+        $this->assertNotNull($found);
+        $this->assertEquals('Catatan Single', $found->judul);
+    }
 }
