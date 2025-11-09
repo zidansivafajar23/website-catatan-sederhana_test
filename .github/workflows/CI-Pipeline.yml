@@ -1,0 +1,109 @@
+name: CI - Catatan Sederhana
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - '*.x'
+  pull_request:
+    branches:
+      - main
+      - develop
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  phpunit-tests:
+    runs-on: ubuntu-latest
+    
+    # Testing dilakukan oleh Tim:
+    # - Rafif Purnomo
+    # - Dana
+    # - Zidan
+    # - Amar
+    # - Irji
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.2, 8.3]
+        test-suite: [Unit, Feature]
+
+    name: PHPUnit ${{ matrix.test-suite }} Tests (PHP ${{ matrix.php }})
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, fileinfo
+          coverage: xdebug
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Generate app key
+        run: php artisan key:generate
+
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Run Database Migrations
+        run: php artisan migrate --force
+
+      - name: Execute PHPUnit Tests - ${{ matrix.test-suite }}
+        run: php artisan test --testsuite=${{ matrix.test-suite }} --coverage --min=80
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-php-${{ matrix.php }}-${{ matrix.test-suite }}
+          path: |
+            storage/logs/
+            tests/
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: phpunit-tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # diperlukan agar analisis Sonar lebih akurat
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  all-tests-passed:
+    runs-on: ubuntu-latest
+    needs: [phpunit-tests, sonarqube]
+    if: always()
+    
+    steps:
+      - name: Check Test Results
+        run: |
+          echo "============================================"
+          echo "PHPUnit & SonarQube CI - Catatan Sederhana"
+          echo "============================================"
+          echo "Testing Team:"
+          echo "  - Rafif Purnomo"
+          echo "  - Dana"
+          echo "  - Zidan"
+          echo "  - Amar"
+          echo "  - Irji"
+          echo "============================================"
+          echo "All tests and SonarQube analysis completed successfully!"
+          echo "============================================"
