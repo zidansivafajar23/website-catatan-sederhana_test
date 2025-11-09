@@ -58,4 +58,21 @@ class CatatanFeatureTest extends TestCase
         $catatan = Catatan::all();
         $this->assertCount(2, $catatan);
     }
+
+    /**
+     * Test: DELETE - Dapat menghapus catatan
+     * Tested by: Irji
+     */
+    public function test_can_delete_catatan(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Catatan untuk dihapus',
+            'deskripsi' => 'Akan dihapus'
+        ]);
+
+        $id = $catatan->id;
+        $catatan->delete();
+
+        $this->assertDatabaseMissing('catatan', ['id' => $id]);
+    }
 }
