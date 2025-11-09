@@ -53,4 +53,20 @@ class CatatanModelTest extends TestCase
         $this->assertEquals($catatan->id, $found->id);
         $this->assertEquals('Judul Test', $found->judul);
     }
+     /**
+     * Test: Model Catatan dapat dihapus (DELETE)
+     * Tested by: Amar
+     */
+    public function test_can_delete_catatan_model(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Test Judul',
+            'deskripsi' => 'Test Deskripsi'
+        ]);
+
+        $id = $catatan->id;
+        $catatan->delete();
+
+        $this->assertDatabaseMissing('catatan', ['id' => $id]);
+    }
 }

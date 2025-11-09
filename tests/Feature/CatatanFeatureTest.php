@@ -75,4 +75,26 @@ class CatatanFeatureTest extends TestCase
 
         $this->assertDatabaseMissing('catatan', ['id' => $id]);
     }
+    /**
+     * Test: UPDATE - Dapat mengupdate catatan
+     * Tested by: Amar
+     */
+    public function test_can_update_catatan(): void
+    {
+        $catatan = Catatan::create([
+            'judul' => 'Judul Lama',
+            'deskripsi' => 'Deskripsi Lama'
+        ]);
+
+        $catatan->update([
+            'judul' => 'Judul Baru',
+            'deskripsi' => 'Deskripsi Baru'
+        ]);
+
+        $this->assertDatabaseHas('catatan', [
+            'id' => $catatan->id,
+            'judul' => 'Judul Baru',
+            'deskripsi' => 'Deskripsi Baru'
+        ]);
+    }
 }
