@@ -1,0 +1,65 @@
+---
+- name: Setup Kubernetes & Deploy Laravel App
+  hosts: k8s
+  become: true
+
+  tasks:
+    # =============================
+    # Docker
+    # =============================
+    - name: Install Docker
+      dnf:
+        name: docker
+        state: present
+
+    - name: Enable & start Docker
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Add user to docker group
+      user:
+        name: zidan
+        groups: docker
+        append: true
+
+    # =============================
+    # kubectl
+    # =============================
+    - name: Install kubectl
+      get_url:
+        url: https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+
+    # =============================
+    # Minikube
+    # =============================
+    - name: Install Minikube
+      get_url:
+        url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        dest: /usr/local/bin/minikube
+        mode: '0755'
+
+    - name: Start Minikube
+      become: false
+      command: minikube start --driver=docker
+      args:
+        creates: /home/zidan/.minikube
+
+    # =============================
+    # Deploy App
+    # =============================
+    - name: Copy Kubernetes manifests
+      copy:
+        src: k8s/
+        dest: /home/zidan/k8s/
+
+    - name: Apply Deployment
+      become: false
+      command: kubectl apply -f /home/zidan/k8s/deployment.yaml
+
+    - name: Apply Service
+      become: false
+      command: kubectl apply -f /home/zidan/k8s/service.yaml

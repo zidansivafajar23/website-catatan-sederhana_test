@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: laravel
-          image: docker.io/<dockerhub-username>/catatan-sederhana_test:latest
+          image: docker.io/zidansivafajar23/catatan-sederhana_test:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000

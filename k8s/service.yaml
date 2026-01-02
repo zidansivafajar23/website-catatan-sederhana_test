@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: catatan-sederhana-service
+  name: catatan-sederhana_test-service
 spec:
   selector:
-    app: catatan-sederhana
+    app: catatan-sederhana_test
   type: NodePort
   ports:
     - protocol: TCP
