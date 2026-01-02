@@ -1,6 +1,6 @@
 FROM php:8.3-cli
 
-# Install dependency sistem
+# System dependencies
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -8,16 +8,20 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     && docker-php-ext-install pdo pdo_sqlite
 
-# Install composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy project
+# Copy source
 COPY . .
 
-# Install dependency PHP
+# Install PHP deps
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Clear cached config (PENTING)
+RUN php artisan config:clear || true
 
+EXPOSE 8000
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

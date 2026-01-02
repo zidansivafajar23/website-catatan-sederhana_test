@@ -21,9 +21,9 @@ spec:
           args:
             ["artisan", "serve", "--host=0.0.0.0", "--port=8000"]
           env:
-          - name: APP_KEY
-            value: "base64:12pBkfT/k4qamfpFGovJpYyHuOKkjZ20p8UL2x8aHD0="
           - name: APP_ENV
             value: "production"
           - name: APP_DEBUG
             value: "false"
+          - name: APP_KEY
+            value: "base64:12pBkfT/k4qamfpFGovJpYyHuOKkjZ20p8UL2x8aHD0="
