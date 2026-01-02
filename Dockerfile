@@ -19,4 +19,5 @@ COPY . .
 # Install dependency PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-CMD ["php", "-v"]
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+
