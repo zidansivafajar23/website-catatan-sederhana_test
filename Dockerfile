@@ -21,6 +21,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Clear cached config (PENTING)
 # test push 1
+# test push 2
 RUN php artisan config:clear || true
 
 EXPOSE 8000
